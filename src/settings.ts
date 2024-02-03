@@ -6,4 +6,4 @@ export const PLATFORM_NAME = 'AmbientWeatherSensors';
 /**
  * This must match the name of your plugin as defined the package.json
  */
-export const PLUGIN_NAME = 'homebridge-ambient-weather-sensors';
+export const PLUGIN_NAME = '@gbridge0/homebridge-ambient-weather-sensors';

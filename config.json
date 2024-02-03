@@ -1,0 +1,13 @@
+{
+    "name": "AmbientWeatherSensors",
+    "apiKey": "3abcc03995ae4a7eb37444a5fe1d19f35e5690048a6d47cdb1c02784baaf0d40",
+    "applicationKey": "8f1d95596891469688866c9dd691e66b387c7a9af9fc44ed83c724fbaa0b17bc",
+    "temperatureSensors": true,
+    "humiditySensors": true,
+    "solarRadiationSensors": false,
+    "platform": "AmbientWeatherSensors",
+    "_bridge": {
+        "username": "0E:65:F3:E8:49:33",
+        "port": 46455
+    }
+}
