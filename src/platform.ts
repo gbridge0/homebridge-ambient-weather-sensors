@@ -116,7 +116,8 @@ export class AmbientWeatherSensorsPlatform implements DynamicPlatformPlugin {
         return this.fetchDevices();
       }
 
-      const data = await response.json();
+      const body = await response.text();
+      const data = JSON.parse(body);
       this.Cache.write(data);
 
       return this.parseDevices(data);
