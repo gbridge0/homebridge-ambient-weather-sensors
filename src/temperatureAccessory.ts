@@ -49,12 +49,14 @@ export class TemperatureAccessory {
 
     const Devices = await this.platform.fetchDevices();
 
-    const sensor = Devices.filter( (o: DEVICE) => {
-      return o.uniqueId === this.accessory.context.device.uniqueId;
-    });
+    if (Devices != null) {
+      const sensor = Devices.filter( (o: DEVICE) => {
+        return o.uniqueId === this.accessory.context.device.uniqueId;
+      });
 
-    const value = sensor[0].value;
-    this.platform.log.debug(`SET CurrentTemperature: ${value}`);
-    this.service.setCharacteristic(this.platform.Characteristic.CurrentTemperature, this.fahrenheitToCelsius(value));
+      const value = sensor[0].value;
+      this.platform.log.debug(`SET CurrentTemperature: ${value}`);
+      this.service.setCharacteristic(this.platform.Characteristic.CurrentTemperature, this.fahrenheitToCelsius(value));
+    }
   }
 }

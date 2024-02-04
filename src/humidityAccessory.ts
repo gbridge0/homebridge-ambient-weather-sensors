@@ -46,12 +46,14 @@ export class HumidityAccessory {
 
     const Devices = await this.platform.fetchDevices();
 
-    const sensor = Devices.filter( (o: DEVICE) => {
-      return o.uniqueId === this.accessory.context.device.uniqueId;
-    });
+    if (Devices != null) {
+      const sensor = Devices.filter( (o: DEVICE) => {
+        return o.uniqueId === this.accessory.context.device.uniqueId;
+      });
 
-    const value = sensor[0].value;
-    this.platform.log.debug(`SET CurrentHumidity: ${value}`);
-    this.service.setCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity, value);
+      const value = sensor[0].value;
+      this.platform.log.debug(`SET CurrentHumidity: ${value}`);
+      this.service.setCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity, value);
+    }
   }
 }
