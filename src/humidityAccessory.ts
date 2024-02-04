@@ -46,7 +46,7 @@ export class HumidityAccessory {
 
     const Devices = await this.platform.fetchDevices();
 
-    if (Devices != null) {
+    if (Devices !== undefined && Devices !== null) {
       const sensor = Devices.filter( (o: DEVICE) => {
         return o.uniqueId === this.accessory.context.device.uniqueId;
       });
