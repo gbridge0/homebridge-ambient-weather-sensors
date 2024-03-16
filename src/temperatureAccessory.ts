@@ -26,8 +26,8 @@ export class TemperatureAccessory {
     this.service.setCharacteristic(this.platform.Characteristic.Name, accessory.context.device.displayName);
 
     // create handlers for required characteristics
-    this.service.getCharacteristic(this.platform.Characteristic.CurrentTemperature)
-      .on('get', this.handleCurrentTemperatureGet.bind(this));
+    // this.service.getCharacteristic(this.platform.Characteristic.CurrentTemperature)
+    //   .on('get', this.handleCurrentTemperatureGet.bind(this));
 
     this.updateData();
     setInterval(this.updateData.bind(this), 2 * 60 * 1000);
@@ -43,7 +43,7 @@ export class TemperatureAccessory {
   private handleCurrentTemperatureGet(): number {
     this.platform.log.debug('Triggered GET CurrentTemperature');
 
-    this.updateData();
+    //this.updateData();
 
     const currentValue = this.accessory.context.device.value;
     this.platform.log.debug(`CurrentTemperature: ${currentValue}`);
@@ -62,7 +62,8 @@ export class TemperatureAccessory {
 
       const value = sensor[0].value;
       this.platform.log.debug(`SET CurrentTemperature: ${value}`);
-      this.service.setCharacteristic(this.platform.Characteristic.CurrentTemperature, this.fahrenheitToCelsius(value));
+      this.service.getCharacteristic(this.platform.Characteristic.CurrentTemperature).updateValue(this.fahrenheitToCelsius(value));
+      //this.service.setCharacteristic(this.platform.Characteristic.CurrentTemperature, this.fahrenheitToCelsius(value));
     }
   }
 }
