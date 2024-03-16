@@ -160,6 +160,12 @@ export class AmbientWeatherSensorsPlatform implements DynamicPlatformPlugin {
 
       const Devices = await this.fetchDevicesFromAPI();
 
+      // before we continue, add 5 seconds delay. This is to create a 5 second gap
+      // between future AWN API call and accessories data update.
+      // Both of them are set to 2 minutes interval, so this increase the chance that
+      // the API call will finish before the accessory data update.
+      await this.sleep(5000);
+
       // remove any existing accessories that arent returned by the API
       this.deregisterAccessories(Devices);
 

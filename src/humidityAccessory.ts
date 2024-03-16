@@ -25,28 +25,14 @@ export class HumidityAccessory {
     // set the service name, this is what is displayed as the default name on the Home app
     this.service.setCharacteristic(this.platform.Characteristic.Name, accessory.context.device.displayName);
 
-    // this.updateData();
-    // setInterval(this.updateData.bind(this), 2 * 60 * 1000);
-  }
-
-  /**
-   * Handle requests to get the current value of the "Current Temperature" characteristic
-   */
-  handleCurrentRelativeHumidityGet() {
-    this.platform.log.debug('Triggered GET CurrentRelativeHumidity');
-
     this.updateData();
-
-    // set this to a valid value for CurrentRelativeHumidity
-    const currentValue = this.accessory.context.device.value;
-    this.platform.log.debug(`CurrentHumidity: ${currentValue}`);
-    return currentValue;
+    setInterval(this.updateData.bind(this), 2 * 60 * 1000);
   }
 
   private async updateData(): Promise<void> {
-    this.platform.log.debug('Updating CurrentHumidity Data');
+    this.platform.log.debug(`${this.accessory.context.device.displayName}:Updating CurrentHumidity Data`);
 
-    const Devices = await this.platform.fetchDevices();
+    const Devices = this.platform.fetchDevices();
 
     if (Devices !== undefined && Devices !== null) {
       const sensor = Devices.filter( (o: DEVICE) => {
@@ -54,8 +40,8 @@ export class HumidityAccessory {
       });
 
       const value = sensor[0].value;
-      this.platform.log.debug(`SET CurrentHumidity: ${value}`);
-      this.service.setCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity, value);
+      this.platform.log.debug(`${this.accessory.context.device.displayName}:SET CurrentHumidity: ${value}`);
+      this.service.getCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity).updateValue(value);
     }
   }
 }
