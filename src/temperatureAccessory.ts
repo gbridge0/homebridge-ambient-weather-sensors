@@ -25,10 +25,6 @@ export class TemperatureAccessory {
     // set the service name, this is what is displayed as the default name on the Home app
     this.service.setCharacteristic(this.platform.Characteristic.Name, accessory.context.device.displayName);
 
-    // create handlers for required characteristics
-    // this.service.getCharacteristic(this.platform.Characteristic.CurrentTemperature)
-    //   .on('get', this.handleCurrentTemperatureGet.bind(this));
-
     this.updateData();
     setInterval(this.updateData.bind(this), 2 * 60 * 1000);
   }
@@ -51,7 +47,7 @@ export class TemperatureAccessory {
   }
 
   private updateData() {
-    this.platform.log.debug('Updating CurrentTemperature Data');
+    this.platform.log.debug(`${this.accessory.context.device.displayName}: Updating CurrentTemperature Data`);
 
     const Devices = this.platform.fetchDevices();
 
@@ -61,9 +57,8 @@ export class TemperatureAccessory {
       });
 
       const value = sensor[0].value;
-      this.platform.log.debug(`SET CurrentTemperature: ${value}`);
+      this.platform.log.debug(`${this.accessory.context.device.displayName}: SET CurrentTemperature: ${value}`);
       this.service.getCharacteristic(this.platform.Characteristic.CurrentTemperature).updateValue(this.fahrenheitToCelsius(value));
-      //this.service.setCharacteristic(this.platform.Characteristic.CurrentTemperature, this.fahrenheitToCelsius(value));
     }
   }
 }

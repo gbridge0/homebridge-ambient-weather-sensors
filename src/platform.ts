@@ -30,6 +30,11 @@ export class AmbientWeatherSensorsPlatform implements DynamicPlatformPlugin {
       log.debug('Executed didFinishLaunching callback');
       // run the method to discover / register your devices as accessories
       this.discoverDevices();
+
+      // Fetch data from AWN API and write to cache every 2 minutes
+      this.log.info('AWPlatform: Setting up interval to fetch sensors from AWN API every 2 minutes');
+      setInterval(this.fetchDevicesFromAPI.bind(this), 2 * 60 * 1000);
+
     });
   }
 
@@ -104,7 +109,7 @@ export class AmbientWeatherSensorsPlatform implements DynamicPlatformPlugin {
 
   // async function to fetch the devices from the remote API
   async fetchDevicesFromAPI() {
-    this.log.debug('----- Fetching sensors from ambientweather API -----');
+    this.log.info('AWS platform: --- Fetching sensors from ambientweather API -----');
 
     try {
       const url = `https://rt.ambientweather.net/v1/devices?applicationKey=${this.config.applicationKey}&apiKey=${this.config.apiKey}`;
@@ -204,11 +209,6 @@ export class AmbientWeatherSensorsPlatform implements DynamicPlatformPlugin {
           this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
         }
       }
-
-      // load from remote API every 2 minutes
-      this.log.debug('Setting up interval to fetch sensors from remote API every 2 minutes');
-      setInterval(this.fetchDevicesFromAPI.bind(this), 2 * 60 * 1000);
-
     } catch(error) {
       let message;
       if (error instanceof Error) {
