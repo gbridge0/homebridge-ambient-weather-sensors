@@ -5,7 +5,7 @@ import fs from 'fs';
 export class Cache {
 
   private valid = false;
-  private cache_data = {
+  private cachedData = {
     cache_time: Date.now(),
     ttl: this.ttl,
     data: [],
@@ -28,7 +28,7 @@ export class Cache {
     };
 
     try {
-      this.cache_data = cache;
+      this.cachedData = cache;
       fs.writeFileSync(this.CacheFile, JSON.stringify(cache));
     } catch (error) {
       let message;
@@ -45,14 +45,15 @@ export class Cache {
     this.log.debug('Reading API response from cache');
 
     try {
-      if (this.cache_data !== undefined) {
-        return this.cache_data;
+      // return cached data if data element is not empty
+      if (this.cachedData.data.length > 0) {
+        return this.cachedData;
       }
 
-      this.log.debug('Reading API response from DISK cache');
+      this.log.debug('Reading API response from DISK cache and populating in memory cache');
       const data = fs.readFileSync(this.CacheFile, 'utf8');
       const json = JSON.parse(data);
-      this.cache_data = json;
+      this.cachedData = json;
       return json;
 
     } catch (error) {
@@ -71,7 +72,6 @@ export class Cache {
       if (!err) {
         const cache = this.read();
         const now = Date.now();
-        // use dynamic TTL
         this.valid = now - cache.cache_time < this.ttl;
       }
     });

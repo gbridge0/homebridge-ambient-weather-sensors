@@ -109,6 +109,12 @@ export class AmbientWeatherSensorsPlatform implements DynamicPlatformPlugin {
     try {
       const url = `https://rt.ambientweather.net/v1/devices?applicationKey=${this.config.applicationKey}&apiKey=${this.config.apiKey}`;
       const response = await fetch(url);
+
+      // check if the response code is 200
+      if (response.status !== 200) {
+        throw new Error(`Received unexpected response code: ${response.status}`);
+      }
+
       const json = await response.json();
 
       this.Cache.write(json);
@@ -197,11 +203,12 @@ export class AmbientWeatherSensorsPlatform implements DynamicPlatformPlugin {
           // link the accessory to your platform
           this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
         }
-
-        // load from remote API every 2 minutes
-        this.log.debug('Setting up interval to fetch sensors from remote API every 2 minutes');
-        setInterval(this.fetchDevicesFromAPI.bind(this), 2 * 60 * 1000);
       }
+
+      // load from remote API every 2 minutes
+      this.log.debug('Setting up interval to fetch sensors from remote API every 2 minutes');
+      setInterval(this.fetchDevicesFromAPI.bind(this), 2 * 60 * 1000);
+
     } catch(error) {
       let message;
       if (error instanceof Error) {
