@@ -83,18 +83,12 @@ export class AmbientWeatherSensorsPlatform implements DynamicPlatformPlugin {
   sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
   async fetchDevices() {
-    this.log.debug('Fetching sensors from Ambient Weather API');
+    this.log.debug('Fetching sensors from cache');
 
     try {
-      // validate cache
-      if (this.Cache.isValid()) {
-        // read cache
-        const cache = this.Cache.read();
-
-        this.log.debug('USING DISK CACHE FOR DATA');
-
-        return this.parseDevices(cache.data);
-      }
+      // always use cache data if available
+      const cache = this.Cache.read();
+      return this.parseDevices(cache.data);
     } catch(error) {
       let message;
       if (error instanceof Error) {
@@ -103,24 +97,23 @@ export class AmbientWeatherSensorsPlatform implements DynamicPlatformPlugin {
         message = String(error);
       }
       this.log.error('ERROR:', message);
+      return [];
     }
+
+  }
+
+  // async function to fetch the devices from the remote API
+  async fetchDevicesFromAPI() {
+    this.log.debug('----- Fetching sensors from ambientweather API -----');
 
     try {
       const url = `https://rt.ambientweather.net/v1/devices?applicationKey=${this.config.applicationKey}&apiKey=${this.config.apiKey}`;
       const response = await fetch(url);
+      const json = await response.json();
 
-      // request is being throttled
-      if (response.status === 429) {
-        this.log.debug('429 throttle waiting 1000ms to retry');
-        await this.sleep(1000);
-        return this.fetchDevices();
-      }
+      this.Cache.write(json);
 
-      const body = await response.text();
-      const data = JSON.parse(body);
-      this.Cache.write(data);
-
-      return this.parseDevices(data);
+      return this.parseDevices(json);
     } catch(error) {
       let message;
       if (error instanceof Error) {
@@ -129,6 +122,7 @@ export class AmbientWeatherSensorsPlatform implements DynamicPlatformPlugin {
         message = String(error);
       }
       this.log.error('ERROR:', message);
+      return [];
     }
   }
 
@@ -153,7 +147,7 @@ export class AmbientWeatherSensorsPlatform implements DynamicPlatformPlugin {
   async discoverDevices() {
     try {
 
-      const Devices = await this.fetchDevices();
+      const Devices = await this.fetchDevicesFromAPI();
 
       // remove any existing accessories that arent returned by the API
       this.deregisterAccessories(Devices);
@@ -203,6 +197,10 @@ export class AmbientWeatherSensorsPlatform implements DynamicPlatformPlugin {
           // link the accessory to your platform
           this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
         }
+
+        // load from remote API every 2 minutes
+        this.log.debug('Setting up interval to fetch sensors from remote API every 2 minutes');
+        setInterval(this.fetchDevicesFromAPI.bind(this), 2 * 60 * 1000);
       }
     } catch(error) {
       let message;

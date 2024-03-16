@@ -5,6 +5,11 @@ import fs from 'fs';
 export class Cache {
 
   private valid = false;
+  private cache_data = {
+    cache_time: Date.now(),
+    ttl: this.ttl,
+    data: [],
+  };
 
   constructor(
     public readonly CacheFile: string,
@@ -15,7 +20,7 @@ export class Cache {
   }
 
   write(data) {
-    this.log.debug('Writing API response to disk cache');
+    this.log.debug('----- Writing API response to disk cache -----');
     const cache = {
       cache_time: Date.now(),
       ttl: this.ttl,
@@ -23,6 +28,7 @@ export class Cache {
     };
 
     try {
+      this.cache_data = cache;
       fs.writeFileSync(this.CacheFile, JSON.stringify(cache));
     } catch (error) {
       let message;
@@ -36,11 +42,18 @@ export class Cache {
   }
 
   read() {
-    this.log.debug('Reading API response from disk cache');
+    this.log.debug('Reading API response from cache');
 
     try {
+      if (this.cache_data !== undefined) {
+        return this.cache_data;
+      }
+
+      this.log.debug('Reading API response from DISK cache');
       const data = fs.readFileSync(this.CacheFile, 'utf8');
-      return JSON.parse(data);
+      const json = JSON.parse(data);
+      this.cache_data = json;
+      return json;
 
     } catch (error) {
       let message;
@@ -58,7 +71,8 @@ export class Cache {
       if (!err) {
         const cache = this.read();
         const now = Date.now();
-        this.valid = now - cache.cache_time < cache.ttl;
+        // use dynamic TTL
+        this.valid = now - cache.cache_time < this.ttl;
       }
     });
 

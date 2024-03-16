@@ -25,8 +25,8 @@ export class TemperatureAccessory {
     // set the service name, this is what is displayed as the default name on the Home app
     this.service.setCharacteristic(this.platform.Characteristic.Name, accessory.context.device.displayName);
 
-    this.updateData();
-    setInterval(this.updateData.bind(this), 2 * 60 * 1000);
+    // this.updateData();
+    // setInterval(this.updateData.bind(this), 2 * 60 * 1000);
   }
 
   fahrenheitToCelsius(temperature) {
@@ -38,6 +38,8 @@ export class TemperatureAccessory {
    */
   async handleCurrentTemperatureGet() {
     this.platform.log.debug('Triggered GET CurrentTemperature');
+
+    this.updateData();
 
     const currentValue = this.accessory.context.device.value;
     this.platform.log.debug(`CurrentTemperature: ${currentValue}`);

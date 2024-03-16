@@ -25,8 +25,8 @@ export class HumidityAccessory {
     // set the service name, this is what is displayed as the default name on the Home app
     this.service.setCharacteristic(this.platform.Characteristic.Name, accessory.context.device.displayName);
 
-    this.updateData();
-    setInterval(this.updateData.bind(this), 2 * 60 * 1000);
+    // this.updateData();
+    // setInterval(this.updateData.bind(this), 2 * 60 * 1000);
   }
 
   /**
@@ -34,6 +34,8 @@ export class HumidityAccessory {
    */
   handleCurrentRelativeHumidityGet() {
     this.platform.log.debug('Triggered GET CurrentRelativeHumidity');
+
+    this.updateData();
 
     // set this to a valid value for CurrentRelativeHumidity
     const currentValue = this.accessory.context.device.value;
