@@ -82,7 +82,7 @@ export class AmbientWeatherSensorsPlatform implements DynamicPlatformPlugin {
 
   sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
-  async fetchDevices() {
+  fetchDevices() {
     this.log.debug('Fetching sensors from cache');
 
     try {
