@@ -32,7 +32,7 @@ export class AmbientWeatherSensorsPlatform implements DynamicPlatformPlugin {
       this.discoverDevices();
 
       // Fetch data from AWN API and write to cache every 2 minutes
-      this.log.info('AWPlatform: Setting up interval to fetch sensors from AWN API every 2 minutes');
+      this.log.info('AWS Platform: Setting up interval to fetch sensors from AWN API every 2 minutes');
       setInterval(this.fetchDevicesFromAPI.bind(this), 2 * 60 * 1000);
 
     });
@@ -73,7 +73,7 @@ export class AmbientWeatherSensorsPlatform implements DynamicPlatformPlugin {
             Devices.push({
               macAddress: obj.macAddress,
               uniqueId: `${obj.macAddress}-${device[0]}`,
-              displayName: `${obj.macAddress}-${device[0]}`,
+              displayName: `${device[0]}`,
               type: this.determineSensorType(device[0]),
               value: device[1] as number,
             });
