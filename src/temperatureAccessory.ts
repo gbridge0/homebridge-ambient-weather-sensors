@@ -16,7 +16,7 @@ export class TemperatureAccessory {
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Ambient Weather')
       .setCharacteristic(this.platform.Characteristic.Model, 'Temperature Sensor')
-      .setCharacteristic(this.platform.Characteristic.SerialNumber, accessory.context.device.displayName);
+      .setCharacteristic(this.platform.Characteristic.SerialNumber, accessory.context.device.uniqueId);
 
     // get the TemperatureSensor service if it exists, otherwise create a new TemperatureSensor service
     this.service = this.accessory.getService(this.platform.Service.TemperatureSensor)

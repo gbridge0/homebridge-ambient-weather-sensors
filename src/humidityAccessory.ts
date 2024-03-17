@@ -15,7 +15,7 @@ export class HumidityAccessory {
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Ambient Weather')
       .setCharacteristic(this.platform.Characteristic.Model, 'Humidity Sensor')
-      .setCharacteristic(this.platform.Characteristic.SerialNumber, accessory.context.device.displayName);
+      .setCharacteristic(this.platform.Characteristic.SerialNumber, accessory.context.device.uniqueId);
 
     // get the HumiditySensor service if it exists, otherwise create a new HumiditySensor service
     // you can create multiple services for each accessory

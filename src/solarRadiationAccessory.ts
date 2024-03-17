@@ -15,7 +15,7 @@ export class SolarRadiationAccessory {
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Ambient Weather')
       .setCharacteristic(this.platform.Characteristic.Model, 'Solar Radiation Sensor')
-      .setCharacteristic(this.platform.Characteristic.SerialNumber, accessory.context.device.displayName)
+      .setCharacteristic(this.platform.Characteristic.SerialNumber, accessory.context.device.uniqueId)
       .setCharacteristic(this.platform.Characteristic.ProductData, 'Conversion to lux with (W/m2 / 0.0079)');
 
     // get the LightSensor service if it exists, otherwise create a new LightSensor service
